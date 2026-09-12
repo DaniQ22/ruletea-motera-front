@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBase: 'https://ruletea-motera-back/api',
+  apiBase: 'https://ruletea-motera-back.onrender.com/api',
 };
