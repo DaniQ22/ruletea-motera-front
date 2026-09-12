@@ -1,7 +1,7 @@
 export interface Member {
   id: string;
   name: string;
-  phone: string | null;
+  keyword: string | null;
   createdAt: string;
 }
 

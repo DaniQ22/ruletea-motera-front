@@ -1,8 +1,8 @@
 <section class="container page">
   <h1>LISTA DEL <span class="accent">SORTEO</span></h1>
   <p class="lead">
-    Anota tu nombre y tu teléfono: con ese número vas a consultar tu amigo
-    secreto en la Ruleta, desde cualquier celular.
+    Anota tu nombre y crea una palabra clave: con ella vas a consultar tu
+    amigo secreto en la Ruleta, desde cualquier celular.
   </p>
 
   <form class="join-form card" (ngSubmit)="addMember()">
@@ -16,18 +16,19 @@
       autocomplete="off"
     />
     <input
-      type="tel"
-      name="phone"
-      placeholder="Tu número de teléfono"
-      [(ngModel)]="newPhone"
-      maxlength="20"
+      type="text"
+      name="keyword"
+      placeholder="Crea una palabra clave"
+      [(ngModel)]="newKeyword"
+      maxlength="40"
+      minlength="4"
       required
       autocomplete="off"
     />
     <button
       class="btn btn-primary"
       type="submit"
-      [disabled]="loading || !newName.trim() || !newPhone.trim()"
+      [disabled]="loading || !newName.trim() || !newKeyword.trim()"
     >
       Anotarme
     </button>
@@ -111,8 +112,19 @@
     </div>
   </div>
 
+  <div class="search-bar" *ngIf="members.length">
+    <input
+      type="search"
+      placeholder="🔍 Buscar por nombre…"
+      [(ngModel)]="searchQuery"
+      [ngModelOptions]="{ standalone: true }"
+      (ngModelChange)="onSearchChange()"
+    />
+    <span class="search-count">{{ filteredMembers.length }} motero(s)</span>
+  </div>
+
   <div class="members-grid">
-    <div class="member-card card" *ngFor="let member of members">
+    <div class="member-card card" *ngFor="let member of pagedMembers">
       <div class="avatar">🪖</div>
       <span class="member-name">{{ member.name }}</span>
       <button
@@ -125,23 +137,23 @@
         ✕
       </button>
 
-      <p class="phone-ok" *ngIf="member.phone">📱 Teléfono registrado</p>
+      <p class="keyword-ok" *ngIf="member.keyword">🔑 Palabra clave configurada</p>
 
-      <div class="phone-missing" *ngIf="!member.phone">
-        <p>⚠️ Falta el teléfono</p>
-        <div class="phone-form">
+      <div class="keyword-missing" *ngIf="!member.keyword">
+        <p>⚠️ Falta la palabra clave</p>
+        <div class="keyword-form">
           <input
-            type="tel"
-            placeholder="Agregar teléfono"
-            [(ngModel)]="phoneDraftByMember[member.id]"
+            type="text"
+            placeholder="Agregar palabra clave"
+            [(ngModel)]="keywordDraftByMember[member.id]"
             [ngModelOptions]="{ standalone: true }"
-            maxlength="20"
+            maxlength="40"
           />
           <button
             class="btn btn-outline"
             type="button"
-            [disabled]="savingPhoneFor === member.id || !phoneDraftByMember[member.id]?.trim()"
-            (click)="savePhone(member)"
+            [disabled]="savingKeywordFor === member.id || !keywordDraftByMember[member.id]?.trim()"
+            (click)="saveKeyword(member)"
           >
             Guardar
           </button>
@@ -152,6 +164,25 @@
     <p class="empty" *ngIf="!members.length">
       Todavía no hay motores encendidos. ¡Sé el primero en anotarte!
     </p>
+
+    <p class="empty" *ngIf="members.length && !filteredMembers.length">
+      Ningún motero coincide con "{{ searchQuery }}".
+    </p>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button class="btn btn-outline" type="button" [disabled]="currentPageSafe === 1" (click)="prevPage()">
+      ← Anterior
+    </button>
+    <span class="page-indicator">Página {{ currentPageSafe }} de {{ totalPages }}</span>
+    <button
+      class="btn btn-outline"
+      type="button"
+      [disabled]="currentPageSafe === totalPages"
+      (click)="nextPage()"
+    >
+      Siguiente →
+    </button>
   </div>
 
   <a class="btn btn-outline go-wheel" routerLink="/ruleta" *ngIf="status?.drawDone">

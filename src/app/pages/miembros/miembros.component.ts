@@ -44,13 +44,17 @@ export class MiembrosComponent implements OnInit {
   status: DrawStatus | null = null;
 
   newName = '';
-  newPhone = '';
+  newKeyword = '';
   loading = false;
   errorMsg = '';
   successMsg = '';
 
-  phoneDraftByMember: Record<string, string | undefined> = {};
-  savingPhoneFor: string | null = null;
+  keywordDraftByMember: Record<string, string | undefined> = {};
+  savingKeywordFor: string | null = null;
+
+  searchQuery = '';
+  currentPage = 1;
+  readonly pageSize = 12;
 
   isAdmin = false;
   adminKeyInput = '';
@@ -98,16 +102,16 @@ export class MiembrosComponent implements OnInit {
 
   addMember(): void {
     const name = this.newName.trim();
-    const phone = this.newPhone.trim();
-    if (!name || !phone) return;
+    const keyword = this.newKeyword.trim();
+    if (!name || !keyword) return;
 
     this.loading = true;
     this.errorMsg = '';
-    this.api.addMember(name, phone).subscribe({
+    this.api.addMember(name, keyword).subscribe({
       next: (member) => {
         this.members = [...this.members, member];
         this.newName = '';
-        this.newPhone = '';
+        this.newKeyword = '';
         this.loading = false;
         this.refresh();
         this.loadChecklist();
@@ -119,20 +123,20 @@ export class MiembrosComponent implements OnInit {
     });
   }
 
-  savePhone(member: Member): void {
-    const phone = (this.phoneDraftByMember[member.id] ?? '').trim();
-    if (!phone) return;
+  saveKeyword(member: Member): void {
+    const keyword = (this.keywordDraftByMember[member.id] ?? '').trim();
+    if (!keyword) return;
 
-    this.savingPhoneFor = member.id;
+    this.savingKeywordFor = member.id;
     this.errorMsg = '';
-    this.api.updateMemberPhone(member.id, phone).subscribe({
+    this.api.updateMemberKeyword(member.id, keyword).subscribe({
       next: (updated) => {
         this.members = this.members.map((m) => (m.id === updated.id ? updated : m));
-        delete this.phoneDraftByMember[member.id];
-        this.savingPhoneFor = null;
+        delete this.keywordDraftByMember[member.id];
+        this.savingKeywordFor = null;
       },
       error: (err) => {
-        this.savingPhoneFor = null;
+        this.savingKeywordFor = null;
         this.showError(err);
       },
     });
@@ -248,5 +252,40 @@ export class MiembrosComponent implements OnInit {
 
   get pendingCount(): number {
     return this.checklist.filter((c) => !c.hasPartner).length;
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
+  }
+
+  get filteredMembers(): Member[] {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) return this.members;
+    return this.members.filter((m) => m.name.toLowerCase().includes(query));
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredMembers.length / this.pageSize));
+  }
+
+  get currentPageSafe(): number {
+    return Math.min(this.currentPage, this.totalPages);
+  }
+
+  get pagedMembers(): Member[] {
+    const start = (this.currentPageSafe - 1) * this.pageSize;
+    return this.filteredMembers.slice(start, start + this.pageSize);
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(1, page), this.totalPages);
+  }
+
+  prevPage(): void {
+    this.goToPage(this.currentPageSafe - 1);
+  }
+
+  nextPage(): void {
+    this.goToPage(this.currentPageSafe + 1);
   }
 }

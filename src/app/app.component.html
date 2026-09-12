@@ -1,4 +1,17 @@
 <div class="shell">
+  <div class="loading-bar" *ngIf="isLoading()"></div>
+
+  <div class="wake-overlay" *ngIf="showWakeMessage()">
+    <div class="wake-card card">
+      <div class="spinner"></div>
+      <p class="wake-title">Despertando el servidor…</p>
+      <p class="wake-hint">
+        El backend vive en un plan gratuito y se duerme si nadie lo usa.
+        Puede tardar hasta un minuto en arrancar la primera vez.
+      </p>
+    </div>
+  </div>
+
   <header class="topbar">
     <a class="brand" routerLink="/">
       <img class="brand-icon" src="logo-cuervos.jpg" alt="Los Cuervos MC" />

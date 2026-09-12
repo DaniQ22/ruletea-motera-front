@@ -1,6 +1,6 @@
 <section class="container page">
   <h1>LA <span class="accent">RULETA</span> SECRETA</h1>
-  <p class="lead">Selecciona tu nombre, confirma con tu teléfono y gira el motor.</p>
+  <p class="lead">Selecciona tu nombre, confirma con tu palabra clave y gira el motor.</p>
 
   <p class="msg warning" *ngIf="status && !status.drawDone">
     ⚠️ El sorteo del club todavía no se ha activado. Espera a que el admin lo active.
@@ -19,14 +19,14 @@
       <option *ngFor="let m of members" [value]="m.id">{{ m.name }}</option>
     </select>
 
-    <label for="phone-confirm">Confirma tu teléfono</label>
+    <label for="keyword-confirm">Confirma tu palabra clave</label>
     <div class="phone-row">
       <input
-        id="phone-confirm"
-        type="tel"
-        placeholder="Ej: 3001234567"
-        [(ngModel)]="phoneInput"
-        name="phone"
+        id="keyword-confirm"
+        type="text"
+        placeholder="Tu palabra clave"
+        [(ngModel)]="keywordInput"
+        name="keyword"
         [disabled]="confirming"
         autocomplete="off"
         required
@@ -34,14 +34,14 @@
       <button
         class="btn btn-primary"
         type="submit"
-        [disabled]="confirming || !selectedMemberId || !phoneInput.trim()"
+        [disabled]="confirming || !selectedMemberId || !keywordInput.trim()"
       >
         {{ confirming ? 'Verificando…' : 'Ver mi ruleta' }}
       </button>
     </div>
     <p class="picker-hint">
-      El teléfono debe ser el mismo con el que te anotaste, para que nadie
-      más pueda ver tu resultado.
+      La palabra clave debe ser la misma con la que te anotaste, para que
+      nadie más pueda ver tu resultado.
     </p>
   </form>
 

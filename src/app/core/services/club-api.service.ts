@@ -18,12 +18,12 @@ export class ClubApiService {
     return this.http.get<Member[]>(`${API_BASE}/members`);
   }
 
-  addMember(name: string, phone: string): Observable<Member> {
-    return this.http.post<Member>(`${API_BASE}/members`, { name, phone });
+  addMember(name: string, keyword: string): Observable<Member> {
+    return this.http.post<Member>(`${API_BASE}/members`, { name, keyword });
   }
 
-  updateMemberPhone(id: string, phone: string): Observable<Member> {
-    return this.http.patch<Member>(`${API_BASE}/members/${id}/phone`, { phone });
+  updateMemberKeyword(id: string, keyword: string): Observable<Member> {
+    return this.http.patch<Member>(`${API_BASE}/members/${id}/keyword`, { keyword });
   }
 
   removeMember(id: string, adminKey: string): Observable<void> {
@@ -62,9 +62,9 @@ export class ClubApiService {
     return this.http.get<ChecklistEntry[]>(`${API_BASE}/draw/checklist`, adminHeaders(adminKey));
   }
 
-  confirmAssignment(memberId: string, phone: string): Observable<Assignment> {
+  confirmAssignment(memberId: string, keyword: string): Observable<Assignment> {
     return this.http.get<Assignment>(
-      `${API_BASE}/draw/${memberId}/confirm/${encodeURIComponent(phone)}`,
+      `${API_BASE}/draw/${memberId}/confirm/${encodeURIComponent(keyword)}`,
     );
   }
 

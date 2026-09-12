@@ -16,7 +16,7 @@ interface WheelSlice {
 
 interface SavedIdentity {
   memberId: string;
-  phone: string;
+  keyword: string;
 }
 
 const CX = 150;
@@ -85,7 +85,7 @@ export class RuletaComponent implements OnInit {
   status: DrawStatus | null = null;
 
   selectedMemberId = '';
-  phoneInput = '';
+  keywordInput = '';
   confirming = false;
   identified: Assignment | null = null;
 
@@ -106,8 +106,8 @@ export class RuletaComponent implements OnInit {
       const saved = readSavedIdentity();
       if (saved && this.members.some((m) => m.id === saved.memberId)) {
         this.selectedMemberId = saved.memberId;
-        this.phoneInput = saved.phone;
-        this.confirm(saved.memberId, saved.phone, false);
+        this.keywordInput = saved.keyword;
+        this.confirm(saved.memberId, saved.keyword, false);
       }
     });
   }
@@ -122,20 +122,20 @@ export class RuletaComponent implements OnInit {
   }
 
   onSubmitConfirm(): void {
-    const phone = this.phoneInput.trim();
-    if (!this.selectedMemberId || !phone) return;
-    this.confirm(this.selectedMemberId, phone, true);
+    const keyword = this.keywordInput.trim();
+    if (!this.selectedMemberId || !keyword) return;
+    this.confirm(this.selectedMemberId, keyword, true);
   }
 
-  private confirm(memberId: string, phone: string, persist: boolean): void {
+  private confirm(memberId: string, keyword: string, persist: boolean): void {
     this.confirming = true;
     this.errorMsg = '';
 
-    this.api.confirmAssignment(memberId, phone).subscribe({
+    this.api.confirmAssignment(memberId, keyword).subscribe({
       next: (assignment) => {
         this.confirming = false;
         this.identified = assignment;
-        if (persist) saveIdentity({ memberId, phone });
+        if (persist) saveIdentity({ memberId, keyword });
 
         this.buildWheel();
         if (assignment.revealed) {
@@ -148,7 +148,7 @@ export class RuletaComponent implements OnInit {
         this.errorMsg =
           err instanceof HttpErrorResponse && err.error?.message
             ? err.error.message
-            : 'No se pudo verificar tu teléfono.';
+            : 'No se pudo verificar tu palabra clave.';
       },
     });
   }
@@ -222,7 +222,7 @@ export class RuletaComponent implements OnInit {
   changeMember(): void {
     clearSavedIdentity();
     this.selectedMemberId = '';
-    this.phoneInput = '';
+    this.keywordInput = '';
     this.identified = null;
     this.slices = [];
     this.revealedName = null;
