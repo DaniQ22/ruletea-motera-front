@@ -1,0 +1,110 @@
+<section class="container page">
+  <h1>LA <span class="accent">RULETA</span> SECRETA</h1>
+  <p class="lead">Selecciona tu nombre, confirma con tu teléfono y gira el motor.</p>
+
+  <p class="msg warning" *ngIf="status && !status.drawDone">
+    ⚠️ El sorteo del club todavía no se ha realizado.
+    <a routerLink="/miembros">Ve a Miembros</a> para activarlo.
+  </p>
+
+  <form class="picker card" *ngIf="status?.drawDone && !identified" (ngSubmit)="onSubmitConfirm()">
+    <label for="member-select">¿Quién eres?</label>
+    <select
+      id="member-select"
+      [(ngModel)]="selectedMemberId"
+      (ngModelChange)="onSelectMember()"
+      name="member"
+      [disabled]="confirming"
+    >
+      <option value="" disabled>Selecciona tu nombre</option>
+      <option *ngFor="let m of members" [value]="m.id">{{ m.name }}</option>
+    </select>
+
+    <label for="phone-confirm">Confirma tu teléfono</label>
+    <div class="phone-row">
+      <input
+        id="phone-confirm"
+        type="tel"
+        placeholder="Ej: 3001234567"
+        [(ngModel)]="phoneInput"
+        name="phone"
+        [disabled]="confirming"
+        autocomplete="off"
+        required
+      />
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="confirming || !selectedMemberId || !phoneInput.trim()"
+      >
+        {{ confirming ? 'Verificando…' : 'Ver mi ruleta' }}
+      </button>
+    </div>
+    <p class="picker-hint">
+      El teléfono debe ser el mismo con el que te anotaste, para que nadie
+      más pueda ver tu resultado.
+    </p>
+  </form>
+
+  <div class="picker card identified" *ngIf="identified">
+    <div class="picker-head">
+      <span>👋 Hola, <strong>{{ identified.giverName }}</strong></span>
+      <button class="change-link" type="button" (click)="changeMember()">
+        No soy yo, cambiar
+      </button>
+    </div>
+  </div>
+
+  <p class="msg error" *ngIf="errorMsg">⚠️ {{ errorMsg }}</p>
+
+  <div class="wheel-zone" *ngIf="identified && slices.length">
+    <div class="pointer">▼</div>
+    <div class="wheel-frame">
+      <svg
+        viewBox="0 0 300 300"
+        class="wheel"
+        [class.spinning]="spinning"
+        [class.no-transition]="noTransition"
+        [style.transform]="'rotate(' + rotation + 'deg)'"
+      >
+        <g>
+          <path
+            *ngFor="let slice of slices"
+            [attr.d]="slice.path"
+            [attr.fill]="slice.color"
+            class="slice"
+          />
+          <text
+            *ngFor="let slice of slices"
+            [attr.x]="slice.labelX"
+            [attr.y]="slice.labelY"
+            [attr.transform]="'rotate(' + slice.labelRotate + ' ' + slice.labelX + ' ' + slice.labelY + ')'"
+            class="slice-label"
+          >
+            {{ slice.name }}
+          </text>
+        </g>
+        <circle cx="150" cy="150" r="146" class="wheel-outline" />
+      </svg>
+      <div class="hub">🏍️</div>
+    </div>
+
+    <button
+      class="btn btn-primary spin-btn"
+      type="button"
+      (click)="spin()"
+      [disabled]="spinning || !!revealedName"
+    >
+      {{ spinning ? 'Girando…' : revealedName ? 'Ya giraste' : '🔥 Girar la ruleta' }}
+    </button>
+  </div>
+
+  <div class="reveal-card card" *ngIf="revealedName">
+    <p class="shh">🤫 Guarda el secreto</p>
+    <p class="reveal-label">Tu amigo secreto es</p>
+    <h2 class="reveal-name">{{ revealedName }}</h2>
+    <button class="btn btn-outline" type="button" (click)="changeMember()">
+      Soy otro piloto
+    </button>
+  </div>
+</section>

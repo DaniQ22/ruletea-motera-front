@@ -1,0 +1,160 @@
+<section class="container page">
+  <h1>LISTA DEL <span class="accent">SORTEO</span></h1>
+  <p class="lead">
+    Anota tu nombre y tu teléfono: con ese número vas a consultar tu amigo
+    secreto en la Ruleta, desde cualquier celular.
+  </p>
+
+  <form class="join-form card" (ngSubmit)="addMember()">
+    <input
+      type="text"
+      name="name"
+      placeholder="Tu nombre o apodo de club"
+      [(ngModel)]="newName"
+      maxlength="60"
+      required
+      autocomplete="off"
+    />
+    <input
+      type="tel"
+      name="phone"
+      placeholder="Tu número de teléfono"
+      [(ngModel)]="newPhone"
+      maxlength="20"
+      required
+      autocomplete="off"
+    />
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [disabled]="loading || !newName.trim() || !newPhone.trim()"
+    >
+      Anotarme
+    </button>
+  </form>
+
+  <p class="msg error" *ngIf="errorMsg">⚠️ {{ errorMsg }}</p>
+  <p class="msg success" *ngIf="successMsg">✅ {{ successMsg }}</p>
+
+  <div class="status-bar card" *ngIf="status">
+    <div>
+      <strong>{{ status.totalMembers }}</strong>
+      <span>anotados</span>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <strong>{{ status.drawDone ? 'SÍ' : 'NO' }}</strong>
+      <span>sorteo realizado</span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="status-actions" *ngIf="isAdmin">
+      <button
+        class="btn btn-primary"
+        type="button"
+        [disabled]="!canDraw"
+        (click)="runDraw()"
+      >
+        🎲 Realizar sorteo
+      </button>
+      <button
+        class="btn btn-outline"
+        type="button"
+        *ngIf="status.drawDone"
+        [disabled]="pendingCount < 2"
+        [title]="pendingCount < 2 ? 'Necesitas al menos 2 pilotos sin pareja' : ''"
+        (click)="completeRemaining()"
+      >
+        🧩 Completar rezagados
+      </button>
+      <button
+        class="btn btn-danger"
+        type="button"
+        *ngIf="status.drawDone"
+        (click)="resetDraw()"
+      >
+        Reiniciar sorteo
+      </button>
+      <button class="admin-link" type="button" (click)="lockAdmin()">
+        🔓 Admin · salir
+      </button>
+    </div>
+
+    <form class="admin-unlock" *ngIf="!isAdmin" (ngSubmit)="unlockAdmin()">
+      <input
+        type="password"
+        placeholder="Contraseña admin"
+        [(ngModel)]="adminKeyInput"
+        name="adminKey"
+        autocomplete="off"
+      />
+      <button class="btn btn-outline" type="submit" [disabled]="!adminKeyInput.trim()">
+        🔒 Entrar
+      </button>
+    </form>
+  </div>
+  <p class="msg error" *ngIf="adminError">⚠️ {{ adminError }}</p>
+  <p class="hint" *ngIf="status && !status.drawDone && status.totalMembers < status.minRequired">
+    Necesitas al menos {{ status.minRequired }} moteros registrados para sortear.
+  </p>
+
+  <div class="checklist card" *ngIf="isAdmin && checklist.length">
+    <h3>Estado del sorteo <span class="checklist-note">(solo tú lo ves, sin nombres de pareja)</span></h3>
+    <div class="checklist-row" *ngFor="let entry of checklist">
+      <span class="checklist-name">{{ entry.name }}</span>
+      <span class="checklist-tag" [class.ok]="entry.hasPartner" [class.pending]="!entry.hasPartner">
+        {{ entry.hasPartner ? '✅ Tiene pareja' : '⏳ Sin pareja' }}
+      </span>
+      <span class="checklist-tag" [class.ok]="entry.revealed" [class.pending]="!entry.revealed">
+        {{ entry.revealed ? '🎯 Ya giró' : '🕓 No ha girado' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="members-grid">
+    <div class="member-card card" *ngFor="let member of members">
+      <div class="avatar">🪖</div>
+      <span class="member-name">{{ member.name }}</span>
+      <button
+        class="remove-btn"
+        type="button"
+        *ngIf="isAdmin"
+        title="Quitar de la lista"
+        (click)="removeMember(member)"
+      >
+        ✕
+      </button>
+
+      <p class="phone-ok" *ngIf="member.phone">📱 Teléfono registrado</p>
+
+      <div class="phone-missing" *ngIf="!member.phone">
+        <p>⚠️ Falta el teléfono</p>
+        <div class="phone-form">
+          <input
+            type="tel"
+            placeholder="Agregar teléfono"
+            [(ngModel)]="phoneDraftByMember[member.id]"
+            [ngModelOptions]="{ standalone: true }"
+            maxlength="20"
+          />
+          <button
+            class="btn btn-outline"
+            type="button"
+            [disabled]="savingPhoneFor === member.id || !phoneDraftByMember[member.id]?.trim()"
+            (click)="savePhone(member)"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!members.length">
+      Todavía no hay motores encendidos. ¡Sé el primero en anotarte!
+    </p>
+  </div>
+
+  <a class="btn btn-outline go-wheel" routerLink="/ruleta" *ngIf="status?.drawDone">
+    Ir a la ruleta →
+  </a>
+</section>

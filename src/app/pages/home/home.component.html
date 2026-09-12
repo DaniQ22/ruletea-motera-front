@@ -1,0 +1,26 @@
+<section class="hero container">
+  <img class="hero-logo" src="logo-cuervos.jpg" alt="Los Cuervos MC" />
+  <p class="kicker">🏍️ Los Cuervos MC</p>
+  <h1>
+    RULETA RUSA <span class="accent">MOTERA</span>
+  </h1>
+  <p class="subtitle">
+    El amigo secreto del club, a puro rugido de motor. Anota tu nombre, gira
+    la ruleta y descubre a quién le toca consentir en esta rodada.
+  </p>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" routerLink="/miembros">Anotarme al sorteo</a>
+    <a class="btn btn-outline" routerLink="/ruleta">Girar la ruleta</a>
+  </div>
+</section>
+
+<div class="road-divider" aria-hidden="true"></div>
+
+<section class="steps container">
+  <div class="step card" *ngFor="let step of steps">
+    <span class="step-icon">{{ step.icon }}</span>
+    <h3>{{ step.title }}</h3>
+    <p>{{ step.text }}</p>
+  </div>
+</section>
