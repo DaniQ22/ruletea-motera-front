@@ -351,3 +351,55 @@ h1 {
   align-self: center;
   margin-top: 1rem;
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .join-form {
+    flex-direction: column;
+
+    input,
+    button {
+      width: 100%;
+    }
+  }
+
+  .status-bar {
+    justify-content: center;
+  }
+
+  .status-actions,
+  .admin-unlock {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-unlock {
+    flex-direction: column;
+
+    input,
+    button {
+      width: 100%;
+    }
+  }
+
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+
+    input {
+      min-width: 0;
+    }
+
+    .search-count {
+      text-align: center;
+    }
+  }
+
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+}

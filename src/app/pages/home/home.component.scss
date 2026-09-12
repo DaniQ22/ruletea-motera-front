@@ -94,3 +94,32 @@ h1 {
 .step-icon {
   font-size: 2.4rem;
 }
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 3rem 1.25rem 2rem;
+    gap: 1rem;
+  }
+
+  .hero-logo {
+    width: 90px;
+    height: 90px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .cta-row {
+    flex-direction: column;
+    width: 100%;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .steps {
+    padding-bottom: 2.5rem;
+  }
+}

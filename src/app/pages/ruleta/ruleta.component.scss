@@ -249,3 +249,32 @@ h1 {
     transform: scale(1) translateY(0);
   }
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .picker {
+    padding: 1.1rem 1.15rem;
+
+    .phone-row {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .reveal-card {
+    padding: 1.75rem 1.5rem;
+    width: 100%;
+  }
+
+  .hub {
+    width: 46px;
+    height: 46px;
+    font-size: 1.3rem;
+  }
+}

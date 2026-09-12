@@ -181,6 +181,33 @@
   letter-spacing: 0.04em;
 }
 
+@media (max-width: 480px) {
+  .topbar {
+    justify-content: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-text strong {
+    font-size: 1.15rem;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+    gap: 0.25rem;
+
+    a {
+      padding: 0.45rem 0.7rem;
+      font-size: 0.78rem;
+    }
+  }
+}
+
 .credit {
   font-size: 0.75rem;
   font-weight: 700;
