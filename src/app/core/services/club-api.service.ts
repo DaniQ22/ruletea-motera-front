@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Assignment, ChecklistEntry, DrawStatus, Member } from '../models/club.models';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = environment.apiBase;
 
 function adminHeaders(adminKey: string): { headers: HttpHeaders } {
   return { headers: new HttpHeaders({ 'x-admin-key': adminKey }) };

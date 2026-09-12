@@ -3,8 +3,7 @@
   <p class="lead">Selecciona tu nombre, confirma con tu teléfono y gira el motor.</p>
 
   <p class="msg warning" *ngIf="status && !status.drawDone">
-    ⚠️ El sorteo del club todavía no se ha realizado.
-    <a routerLink="/miembros">Ve a Miembros</a> para activarlo.
+    ⚠️ El sorteo del club todavía no se ha activado. Espera a que el admin lo active.
   </p>
 
   <form class="picker card" *ngIf="status?.drawDone && !identified" (ngSubmit)="onSubmitConfirm()">

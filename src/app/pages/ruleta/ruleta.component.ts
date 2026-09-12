@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { ClubApiService } from '../../core/services/club-api.service';
 import { Assignment, DrawStatus, Member } from '../../core/models/club.models';
 
@@ -77,7 +76,7 @@ function clearSavedIdentity(): void {
 @Component({
   selector: 'app-ruleta',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './ruleta.component.html',
   styleUrl: './ruleta.component.scss',
 })
