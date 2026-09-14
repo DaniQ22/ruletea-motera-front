@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { ClubApiService } from '../../core/services/club-api.service';
-import { ChecklistEntry, DrawStatus, Member } from '../../core/models/club.models';
+import { Assignment, ChecklistEntry, DrawStatus, Member } from '../../core/models/club.models';
 
 const ADMIN_STORAGE_KEY = 'cuervos-ruleta:admin-key';
 
@@ -62,6 +62,10 @@ export class MiembrosComponent implements OnInit {
   private adminKey = '';
 
   checklist: ChecklistEntry[] = [];
+
+  pairs: Assignment[] = [];
+  showingPairs = false;
+  loadingPairs = false;
 
   constructor(private readonly api: ClubApiService) {}
 
@@ -180,7 +184,41 @@ export class MiembrosComponent implements OnInit {
     this.isAdmin = false;
     this.adminKey = '';
     this.checklist = [];
+    this.pairs = [];
+    this.showingPairs = false;
     clearAdminKey();
+  }
+
+  toggleEmergencyPairs(): void {
+    if (!this.isAdmin) return;
+
+    if (this.showingPairs) {
+      this.showingPairs = false;
+      this.pairs = [];
+      return;
+    }
+
+    if (
+      !confirm(
+        '⚠️ Esto revela quién le tocó a quién. Úsalo solo en caso de emergencia. ¿Continuar?',
+      )
+    ) {
+      return;
+    }
+
+    this.loadingPairs = true;
+    this.errorMsg = '';
+    this.api.getPairs(this.adminKey).subscribe({
+      next: (pairs) => {
+        this.pairs = pairs;
+        this.showingPairs = true;
+        this.loadingPairs = false;
+      },
+      error: (err) => {
+        this.loadingPairs = false;
+        this.showError(err);
+      },
+    });
   }
 
   runDraw(): void {

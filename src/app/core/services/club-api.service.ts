@@ -62,6 +62,10 @@ export class ClubApiService {
     return this.http.get<ChecklistEntry[]>(`${API_BASE}/draw/checklist`, adminHeaders(adminKey));
   }
 
+  getPairs(adminKey: string): Observable<Assignment[]> {
+    return this.http.get<Assignment[]>(`${API_BASE}/draw/pairs`, adminHeaders(adminKey));
+  }
+
   confirmAssignment(memberId: string, keyword: string): Observable<Assignment> {
     return this.http.get<Assignment>(
       `${API_BASE}/draw/${memberId}/confirm/${encodeURIComponent(keyword)}`,

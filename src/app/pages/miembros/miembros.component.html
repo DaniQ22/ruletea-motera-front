@@ -76,6 +76,15 @@
       >
         Reiniciar sorteo
       </button>
+      <button
+        class="btn btn-outline"
+        type="button"
+        *ngIf="status.drawDone"
+        [disabled]="loadingPairs"
+        (click)="toggleEmergencyPairs()"
+      >
+        🚨 {{ showingPairs ? 'Ocultar parejas' : 'Ver parejas (emergencia)' }}
+      </button>
       <button class="admin-link" type="button" (click)="lockAdmin()">
         🔓 Admin · salir
       </button>
@@ -98,6 +107,15 @@
   <p class="hint" *ngIf="status && !status.drawDone && status.totalMembers < status.minRequired">
     Necesitas al menos {{ status.minRequired }} moteros registrados para sortear.
   </p>
+
+  <div class="checklist card" *ngIf="isAdmin && showingPairs && pairs.length">
+    <h3>🚨 Parejas completas <span class="checklist-note">(solo para emergencias)</span></h3>
+    <div class="checklist-row" *ngFor="let pair of pairs">
+      <span class="checklist-name">{{ pair.giverName }}</span>
+      <span>→</span>
+      <span class="checklist-name">{{ pair.receiverName }}</span>
+    </div>
+  </div>
 
   <div class="checklist card" *ngIf="isAdmin && checklist.length">
     <h3>Estado del sorteo <span class="checklist-note">(solo tú lo ves, sin nombres de pareja)</span></h3>
