@@ -40,6 +40,8 @@ function clearAdminKey(): void {
   styleUrl: './miembros.component.scss',
 })
 export class MiembrosComponent implements OnInit {
+  readonly registrationOpen = false;
+
   members: Member[] = [];
   status: DrawStatus | null = null;
 
@@ -105,6 +107,8 @@ export class MiembrosComponent implements OnInit {
   }
 
   addMember(): void {
+    if (!this.registrationOpen) return;
+
     const name = this.newName.trim();
     const keyword = this.newKeyword.trim();
     if (!name || !keyword) return;

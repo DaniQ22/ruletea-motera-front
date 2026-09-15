@@ -5,7 +5,11 @@
     amigo secreto en la Ruleta, desde cualquier celular.
   </p>
 
-  <form class="join-form card" (ngSubmit)="addMember()">
+  <p class="msg error" *ngIf="!registrationOpen">
+    🔒 El registro de miembros está cerrado por ahora.
+  </p>
+
+  <form class="join-form card" *ngIf="registrationOpen" (ngSubmit)="addMember()">
     <input
       type="text"
       name="name"
